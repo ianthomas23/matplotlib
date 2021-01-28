@@ -20,7 +20,7 @@ def on_mouse_move(event):
             title = f'z = {z:.3f}'
     ax.set_title(title)
     event.canvas.draw()
-    
+
 
 n = 40
 np.random.seed(23)
