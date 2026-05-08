@@ -42,6 +42,7 @@ class BackendRegistry:
         "macosx": "macosx",
         "nbagg": "nbagg",
         "notebook": "nbagg",
+        "pyodide": "pyodide",
         "qtagg": "qt",
         "qtcairo": "qt",
         "qt5agg": "qt5",
@@ -90,6 +91,7 @@ class BackendRegistry:
         # "module://some.backend" syntax.
         self._name_to_module = {
             "notebook": "nbagg",
+            "webagg": "pyodide",
         }
 
     def _backend_module_name(self, backend):
