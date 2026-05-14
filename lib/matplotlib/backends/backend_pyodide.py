@@ -6,7 +6,6 @@ import json
 import mimetypes
 from pathlib import Path
 
-from js import alert, document
 from pyodide.code import run_js
 from pyodide.ffi import create_proxy
 
@@ -53,6 +52,11 @@ class FigureCanvasPyodide(core.FigureCanvasWebAggCore):
     def handle_save(self, event):
         figure_id = event['figure_id']
         format = event['format']
+
+        try:
+            from js import alert, document
+        except ImportError:
+            raise RuntimeError("Save not supported as cannot import js.alert and js.document")
 
         mimetype = mimetypes.types_map.get(f".{format}")
         if mimetype is None:
@@ -128,10 +132,16 @@ class PyodideApplication():
         if cls.initialized:
             return
 
-        css = (Path(__file__).parent / "web_backend/css/mpl.css").read_text(encoding="utf-8")
-        style = document.createElement('style')
-        style.textContent = css
-        document.head.append(style)
+        try:
+            from js import document
+
+            css = (Path(__file__).parent / "web_backend/css/mpl.css").read_text(encoding="utf-8")
+            style = document.createElement('style')
+            style.textContent = css
+            document.head.append(style)
+        except ImportError:
+            # js.document not available, continue without CSS.
+            pass
 
         js_content = core.FigureManagerWebAgg.get_javascript(pyodide=True)
         set_toolbar_image_callback = run_js(js_content)
